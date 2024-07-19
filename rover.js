@@ -7,13 +7,13 @@ class Rover {
    }
 
    receiveMessage(receivedMessage) {
-      let msgObject = {
+      let returnedMessage = {
          message: receivedMessage.messageName,
          results: []
       };
 
       for (let i = 0; i < receivedMessage.commands.length; i++) {
-         let tempResultObj = {completed: false};
+         let result = {completed: false};
 
          if (receivedMessage.commands[i].commandType === "STATUS_CHECK") {
             let roverStatus = { 
@@ -22,24 +22,24 @@ class Rover {
                position: this.position
             };
             
-            tempResultObj.roverStatus = roverStatus;
-            tempResultObj.completed = true;
+            result.roverStatus = roverStatus;
+            result.completed = true;
 
          } else if (receivedMessage.commands[i].commandType === "MODE_CHANGE") {
             this.mode = receivedMessage.commands[i].value;
-            tempResultObj.completed = true;
+            result.completed = true;
 
          } else if (receivedMessage.commands[i].commandType === "MOVE") {
             if(this.mode !== "LOW_POWER") {
                this.position = receivedMessage.commands[i].value;
-               tempResultObj.completed = true;
+               result.completed = true;
             }
          }
 
-         msgObject.results.push(tempResultObj);
+         returnedMessage.results.push(result);
       }
 
-      return msgObject;
+      return returnedMessage;
    }
 }
 
